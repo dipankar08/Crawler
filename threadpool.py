@@ -37,7 +37,6 @@ class ThreadPool:
 
 
 def test():
-    from random import randrange
     from time import sleep
 
     delays = [10 for i in range(100)]
