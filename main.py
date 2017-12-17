@@ -1,5 +1,6 @@
 """Collect command-line options in a dictionary"""
 import parser
+import sys
 def getopts(argv):
     argv = [x.strip() for x in ' '.join(argv[1:]).split('--') if x.strip()]
     opts = {}
@@ -20,65 +21,108 @@ def getopts(argv):
 def desc():
     print """
     Welcome to Crawler!
+    --url : place the data url
+    --pxurl : place the pagination or serach url.
 
     This script can crawl any site in a easyer way in commd line
-    Example 1: Get the heading from a site
-    python main.py --url http://mio.to/ --data heading .heading h1:text
+    Example 1: This example show find some data or a list of data from a website.
 
-    Example 2: get all type and it's url:
-    python main.py --url http://mio.to/ --data type .group a:href --data text .group a:text --debug
+    python main.py \
+    --url http://mio.to/ \
+    --data heading .heading h1:text
+
+    Example 2: How to retrive a list of grouped data from url. Like how can you
+    retrive a list of strudent data from an page? In that case you need to use
+    --dataselector to indiactes the group and then use --data to indivisal item
+    in the group.
+
+    python main.py \
+    --url http://mio.to/ \
+    --dataselector "#genres-list a" \
+    --data name a:text --data link a:href
+
+    You could use --datalimit to restric the outpit.
+    $ python main.py \
+    --url http://mio.to/ \
+    --dataselector "#genres-list a" \
+    --data name a:text \
+    --data link a:href \
+    --datalimit 5
+
+    Example 3: In this example, I will show to to parse a serach page and then
+    retrive data from each detail page. For Example, we want to enlist all the
+    books in goodreads mystery class then go to each book page to retrive book
+    title and rating. Here is how we can do it
+
+    python main.py \
+    --pxurl https://www.goodreads.com/genres/mystery \
+    --pxselector .bigBoxBody .coverWrapper a \
+    --data "title #bookTitle:text" \
+    --data "rating span.rating:text" \
+    --datalimit 100 \
+    --pxlimit 50 \
+    --debug
+
 
     Example 3: careercup has multiple pages and each page has list of question
     preview and in each question we have Question, Answer and number of coments
     Vote info. Can you find all the votes along with id.
-    python main.py --ppurl https://www.careercup.com/page --ppselector a.pageNumber --pselector '#question_preview li .entry >  a' --data id .votesCountQuestion:id --data vote .commentCount:text --debug
+    python main.py --pxurl https://www.careercup.com/page --pxselector a.pageNumber --pxselector '#question_preview li .entry >  a' --data id .votesCountQuestion:id --data vote .commentCount:text --debug
 
     Exmaple 4: How would you grab all mobile data from flipkert ?
-    python main.py --url https://www.flipkart.com/mobiles-new-pinch-sales-store  --dataselector ._2kSfQ4  --data name .iUmrbN:text --data price ._3o3r66:text
+    python main.py \
+    --url https://www.flipkart.com/mobiles-new-pinch-sales-store  \
+    --dataselector ._2kSfQ4  \
+    --data name .iUmrbN:text \
+    --data price ._3o3r66:text \
+    --datalimit 100
 
     Example 3: How can I get debug logs the script:
     use --debug at the end.
-
-    E
 
     """
 if __name__ == '__main__':
     from sys import argv
     myargs = getopts(argv)
+
     url = myargs.get('url', None)
+    pxurl = myargs.get('pxurl', None)
 
-    purl = myargs.get('purl', None)
-    pselctor = myargs.get('pselector')
-    plimit = myargs.get('plimit', 2)
+    pxselctor = myargs.get('pxselector')
+    pxlimit = myargs.get('pxlimit', [3])
+    pxscrolllimit = myargs.get('pxscrolllimit', [0])
 
-    ppurl = myargs.get('ppurl')
-    ppselctor = myargs.get('ppselector')
-    pplimit = myargs.get('pplimit', 2)
-
-    dataselector = myargs.get('dataselector')
     data = myargs.get('data')
+    dataselector = myargs.get('dataselector',[None])
+    datascrolllimit = myargs.get('datascrolllimit', [0])
+    datalimit = myargs.get('datalimit',[10])
+
+    if pxscrolllimit: pxscrolllimit = [int(x) for x in pxscrolllimit]
+    if datascrolllimit: datascrolllimit = [int(x) for x in datascrolllimit]
+    if datalimit: datalimit = [int(x) for x in datalimit]
+
 
     debug = myargs.get('debug', False)
     threads = myargs.get('threads', 1)
     action = myargs.get('action', 'print')
+
     ans = 'Not able to get Ans'
-    if not url and not purl and not ppurl:
-        print '\n\n    Error: You must have --url or --purl or --ppurl'
+    if not url and not pxurl:
+        print '\n\n    Error: You must have --url or --pxurl'
         desc()
+        sys.exit(0)
     elif not data:
-        print 'Error: You must have --data or --datalist'
+        print 'Error: You must have --data'
         desc()
+        sys.exit(0)
     else:
         if url:
-            ans = parser.getData(debug, url[0], dataselector[0], data, threads)
-        elif purl:
-            assert(pselctor is not None)
-            ans = parser.getPData(debug, purl[0],pselctor[0],plimit,dataselector[0], data, threads)
-        elif ppurl:
-            assert(ppselctor is not None)
-            ans = parser.getPPData(debug, ppurl[0],ppselctor[0],pplimit,pselctor[0],plimit,dataselector, data, threads)
-
+            ans = parser.getData(debug, url[0], data, dataselector[0], datalimit[0],datascrolllimit[0], threads)
+        elif pxurl:
+            assert(pxselctor is not None)
+            ans = parser.getPXData(debug, pxurl[0], pxselctor, pxlimit[0], pxscrolllimit[0],data, dataselector[0], datalimit[0], datascrolllimit[0], threads)
     if action == 'print':
         print 'Total entry found:', len(ans)
+        #print ans
         from tabulate import tabulate
         print tabulate([x.values() for x in ans], headers=ans[0].keys(), tablefmt='fancy_grid')
