@@ -12,7 +12,7 @@ import re
 
 def cleartest(s):
     return re.sub("\s\s+" , " ", s)
-    
+
 #join two dict
 def join(a,b):
     for k,v in b.items():
@@ -27,7 +27,7 @@ def myassert(cond, msg):
 
 def getSoup(url, pxscrolllimit=None):
     # pdb.set_trace()
-    if debug: print '************Fetching*****************\n ', url, '...'
+    if debug: print '\n************Fetching*****************\n ', url, '...'
     if pxscrolllimit is None or pxscrolllimit is 0:
         html_doc = requests.get(url).text
     else:
@@ -111,10 +111,11 @@ def elemetryData(soup,data):
         result[d[0]] = select(soup, d[1], d[2])
     return result
 
-def getDataInternal(url, data, dataselector, datacommon,  datascrolllimit, threads):
+def getDataInternal(predata, url, data, dataselector, datacommon,  datascrolllimit, threads):
     # pdb.set_trace()
     soup = getSoup(url, datascrolllimit)
     datacommonresult = elemetryData(soup, datacommon)
+    datacommonresult = join(datacommonresult, predata)
 
     if dataselector:
         datasets = soup.select(dataselector)
@@ -123,14 +124,14 @@ def getDataInternal(url, data, dataselector, datacommon,  datascrolllimit, threa
         return [join(elemetryData(soup, data),datacommonresult)]
 
 @timeit
-def getData(debug1, url, data, dataselector, datacommon, datalimit, datascrolllimit, threads):
+def getData(predata, debug1, url, data, dataselector, datacommon, datalimit, datascrolllimit, threads):
     pre(debug1, url)
     if debug: print ('Get Data called with:',url,data,dataselector,datacommon, datalimit, datascrolllimit,threads)
-    data= getDataInternal(url, data, dataselector, datacommon, datascrolllimit, threads)
+    data= getDataInternal(predata, url, data, dataselector, datacommon, datascrolllimit, threads)
     return data[:datalimit]
 
 @timeit
-def getPXData(debug1, pxurl, pxselector, pxlimit, pxscrolllimit, data, dataselector,datacommon, datalimit, datascrolllimit, threads):
+def getPXData(predata, debug1, pxurl, pxselector, pxlimit, pxscrolllimit, data, dataselector,datacommon, datalimit, datascrolllimit, threads):
     pre(debug1, pxurl)
     # Verify.
     depth = len(pxselector)
@@ -139,16 +140,23 @@ def getPXData(debug1, pxurl, pxselector, pxlimit, pxscrolllimit, data, dataselec
     datalimit = int(datalimit)
     datascrolllimit =int(datascrolllimit)
 
-    startsets = [pxurl]
+    startsets = [(pxurl,{})]
     endsets = []
     for d in range(depth):
         if debug:
             print('Featching for depth'+str(d+1))
             print 'Staring url set',startsets
-        for url in startsets:
+        for url,pi in startsets:
             soup = getSoup(url, pxscrolllimit)
             # pdb.set_trace()
-            endsets += [ abs(base,x.get('href')) for x in soup.select(pxselector[d]) if x.get('href') and x.get('href').strip() != '#']
+            endsets =[]
+            for x in soup.select(pxselector[d]):
+                if x.get('href') and x.get('href').strip() != '#':
+                    url = abs(base,x.get('href'))
+                    pre1 = pi.copy()
+                    pre1['depth'+str(d)] = x.text
+                    endsets.append((url, pre1))
+
             if len(endsets) > pxlimit:
                 endsets = endsets[:pxlimit]
                 break
@@ -164,8 +172,8 @@ def getPXData(debug1, pxurl, pxselector, pxlimit, pxscrolllimit, data, dataselec
         return
     durls = startsets
     result = []
-    for url in durls:
-        res = getDataInternal(url, data, dataselector, datacommon, datascrolllimit, threads)
+    for url, p in durls:
+        res = getDataInternal( p, url, data, dataselector, datacommon, datascrolllimit, threads)
         if res:
             result = result + res
             if len(result) == datalimit:

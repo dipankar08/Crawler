@@ -21,11 +21,11 @@ def getopts(argv):
 # {'key2': ['value2', 'value3'], 'key1': ['value1']}
 def desc():
     print """
+    ***************************************************************
     Welcome to Crawler! Which makes your life simple for crawling.
+
     --pxurl <url>          : Spaciify your url which is used is a cetegories page
     --pxselector <selector to a> : Spaiciy the selector which is to select the urls for next level
-
-    
 
     --url : place the data url when you just have  a data (detail) url.
     --data "<title> <selector>:<type>" indicates the data at the detail page
@@ -149,10 +149,10 @@ if __name__ == '__main__':
         desc()
         #sys.exit(0)
     if url:
-            ans = parser.getData(debug, url[0], data, dataselector[0], datacommon, datalimit[0],datascrolllimit[0], threads)
+            ans = parser.getData({}, debug, url[0], data, dataselector[0], datacommon, datalimit[0],datascrolllimit[0], threads)
     elif pxurl:
             assert(pxselctor is not None)
-            ans = parser.getPXData(debug, pxurl[0], pxselctor, pxlimit[0], pxscrolllimit[0],data, dataselector[0],datacommon, datalimit[0], datascrolllimit[0], threads)
+            ans = parser.getPXData({}, debug, pxurl[0], pxselctor, pxlimit[0], pxscrolllimit[0],data, dataselector[0],datacommon, datalimit[0], datascrolllimit[0], threads)
     if action == 'print':
         print 'Total entry found:', len(ans)
         #print ans
