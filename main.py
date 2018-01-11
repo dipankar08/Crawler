@@ -2,6 +2,7 @@
 import parser
 import sys
 import pdb
+from colors import *
 def getopts(argv):
     argv = [x.strip() for x in ' '.join(argv[1:]).split('--') if x.strip()]
     opts = {}
@@ -154,6 +155,7 @@ if __name__ == '__main__':
             assert(pxselctor is not None)
             ans = parser.getPXData({}, debug, pxurl[0], pxselctor, pxlimit[0], pxscrolllimit[0],data, dataselector[0],datacommon, datalimit[0], datascrolllimit[0], threads)
     if action == 'print':
+        sys.stdout.write(RESET)
         print 'Total entry found:', len(ans)
         #print ans
         from tabulate import tabulate

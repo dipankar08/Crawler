@@ -6,6 +6,8 @@ from timeit import timeit
 import pdb
 import infyScrollFetch
 
+from colors import *
+sys.stdout.write(RED)
 debug = True
 baseurl = ""
 import re
@@ -28,6 +30,8 @@ def myassert(cond, msg):
 def getSoup(url, pxscrolllimit=None):
     # pdb.set_trace()
     if debug: print '\n************Fetching*****************\n ', url, '...'
+    sys.stdout.write('.')
+    sys.stdout.flush()
     if pxscrolllimit is None or pxscrolllimit is 0:
         html_doc = requests.get(url).text
     else:
@@ -149,17 +153,18 @@ def getPXData(predata, debug1, pxurl, pxselector, pxlimit, pxscrolllimit, data, 
         for url,pi in startsets:
             soup = getSoup(url, pxscrolllimit)
             # pdb.set_trace()
-            endsets =[]
+            endsets1 =[]
             for x in soup.select(pxselector[d]):
                 if x.get('href') and x.get('href').strip() != '#':
                     url = abs(base,x.get('href'))
                     pre1 = pi.copy()
                     pre1['depth'+str(d)] = x.text
-                    endsets.append((url, pre1))
+                    endsets1.append((url, pre1))
 
-            if len(endsets) > pxlimit:
-                endsets = endsets[:pxlimit]
-                break
+            if len(endsets1) > pxlimit:
+                endsets += endsets1[:pxlimit]
+            else:
+                endsets += endsets1
         myassert(len(endsets) > 0,"Some how we dont have any url at depth "+str(d))
         startsets = endsets
         endsets = []
@@ -179,3 +184,4 @@ def getPXData(predata, debug1, pxurl, pxselector, pxlimit, pxscrolllimit, data, 
             if len(result) == datalimit:
                 break
     return result
+    sys.stdout.write(RESET)
