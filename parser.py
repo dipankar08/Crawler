@@ -148,7 +148,12 @@ def getPXData(debug1, pxurl, pxselector, pxlimit, pxscrolllimit, data, dataselec
         startsets = endsets
         endsets = []
     if debug: print 'All depth parse complete and count of dataurl is :', len(endsets)
-
+    #pdb.set_trace()
+    if not data:
+        print 'All Data use found is:',len(startsets)
+        print 'Please use -data options to get the data'
+        print startsets
+        return
     durls = startsets
     result = []
     for url in durls:

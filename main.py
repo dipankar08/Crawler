@@ -1,6 +1,7 @@
 """Collect command-line options in a dictionary"""
 import parser
 import sys
+import pdb
 def getopts(argv):
     argv = [x.strip() for x in ' '.join(argv[1:]).split('--') if x.strip()]
     opts = {}
@@ -20,9 +21,24 @@ def getopts(argv):
 # {'key2': ['value2', 'value3'], 'key1': ['value1']}
 def desc():
     print """
-    Welcome to Crawler!
-    --url : place the data url
-    --pxurl : place the pagination or serach url.
+    Welcome to Crawler! Which makes your life simple for crawling.
+    --pxurl <url>          : Spaciify your url which is used is a cetegories page
+    --pxselector <selector to a> : Spaiciy the selector which is to select the urls for next level
+
+    
+
+    --url : place the data url when you just have  a data (detail) url.
+    --data "<title> <selector>:<type>" indicates the data at the detail page
+    --dataselector <selecotor> -> when data page conains a group of information, this indiacte the LCA selector.
+
+    --datalimit <int> -> indidicates how many data entry to be in result ( default = 10)
+    --pxlimit <int>   -> indicates how many navigation url to be consider in categories page
+    --thread <int>    -> how many parallel thread to be run.
+    --debug           -> If you wnat to see the debug logs
+
+    Notes:
+    1. You can have multiple pxurl and pxselctor to explore multiple levels.
+    2. 
 
     This script can crawl any site in a easyer way in commd line
     Example 1: This example show find some data or a list of data from a website.
@@ -104,7 +120,8 @@ if __name__ == '__main__':
 
     debug = myargs.get('debug', False)
     threads = myargs.get('threads', 1)
-    action = myargs.get('action', 'print')
+    #pdb.set_trace()
+    action = myargs.get('action', ['print'])[0]
 
     ans = 'Not able to get Ans'
     if not url and not pxurl:
@@ -112,13 +129,12 @@ if __name__ == '__main__':
         desc()
         sys.exit(0)
     elif not data:
-        print 'Error: You must have --data'
+        print 'Error: You must have --data or we just print the urls'
         desc()
-        sys.exit(0)
-    else:
-        if url:
+        #sys.exit(0)
+    if url:
             ans = parser.getData(debug, url[0], data, dataselector[0], datalimit[0],datascrolllimit[0], threads)
-        elif pxurl:
+    elif pxurl:
             assert(pxselctor is not None)
             ans = parser.getPXData(debug, pxurl[0], pxselctor, pxlimit[0], pxscrolllimit[0],data, dataselector[0], datalimit[0], datascrolllimit[0], threads)
     if action == 'print':
@@ -126,3 +142,12 @@ if __name__ == '__main__':
         #print ans
         from tabulate import tabulate
         print tabulate([x.values() for x in ans], headers=ans[0].keys(), tablefmt='fancy_grid')
+    elif action =='save':
+        print 'Saveing file...'
+        import pickle
+        pickle_out = open("data.pickle","wb")
+        pickle.dump(ans, pickle_out)
+        pickle_out.close()
+    else:
+        print 'No action required'
+        pass

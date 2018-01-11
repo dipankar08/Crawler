@@ -1,0 +1,604 @@
+(lp0
+(dp1
+S'track_artist'
+p2
+V["Rupam Islam"]
+p3
+sS'track_album'
+p4
+VAutograph (2010)
+p5
+sS'album_id'
+p6
+VAutograph (2010)
+p7
+sS'track_number'
+p8
+V1
+p9
+sS'disc_number'
+p10
+g9
+sS'track_name'
+p11
+VBeche Thakar Gaan
+p12
+sS'genre'
+p13
+V/Bengali/Movie Songs
+p14
+sa(dp15
+S'track_artist'
+p16
+V["Shreya Ghoshal"]
+p17
+sS'track_album'
+p18
+VAutograph (2010)
+p19
+sS'album_id'
+p20
+VAutograph (2010)
+p21
+sS'track_number'
+p22
+V2
+p23
+sS'disc_number'
+p24
+g9
+sS'track_name'
+p25
+VChal Rastay
+p26
+sS'genre'
+p27
+V/Bengali/Movie Songs
+p28
+sa(dp29
+S'track_artist'
+p30
+V["Shankar Mahadevan"]
+p31
+sS'track_album'
+p32
+VAutograph (2010)
+p33
+sS'album_id'
+p34
+VAutograph (2010)
+p35
+sS'track_number'
+p36
+V3
+p37
+sS'disc_number'
+p38
+g9
+sS'track_name'
+p39
+VBhaage Jaana Hai Kahan
+p40
+sS'genre'
+p41
+V/Bengali/Movie Songs
+p42
+sa(dp43
+S'track_artist'
+p44
+V["Anandee Basu"]
+p45
+sS'track_album'
+p46
+VAutograph (2010)
+p47
+sS'album_id'
+p48
+VAutograph (2010)
+p49
+sS'track_number'
+p50
+V4
+p51
+sS'disc_number'
+p52
+g9
+sS'track_name'
+p53
+VPhande Poriya Bawga Kande
+p54
+sS'genre'
+p55
+V/Bengali/Movie Songs
+p56
+sa(dp57
+S'track_artist'
+p58
+V["Priyam Mukherjee"]
+p59
+sS'track_album'
+p60
+VAutograph (2010)
+p61
+sS'album_id'
+p62
+VAutograph (2010)
+p63
+sS'track_number'
+p64
+V5
+p65
+sS'disc_number'
+p66
+g9
+sS'track_name'
+p67
+VChal Rastay
+p68
+sS'genre'
+p69
+V/Bengali/Movie Songs
+p70
+sa(dp71
+S'track_artist'
+p72
+V["Saptarshi Mukherjee"]
+p73
+sS'track_album'
+p74
+VAutograph (2010)
+p75
+sS'album_id'
+p76
+VAutograph (2010)
+p77
+sS'track_number'
+p78
+V6
+p79
+sS'disc_number'
+p80
+g9
+sS'track_name'
+p81
+VBeche Thakar Gaan (2)
+p82
+sS'genre'
+p83
+V/Bengali/Movie Songs
+p84
+sa(dp85
+S'track_artist'
+p86
+V["Anupam Roy"]
+p87
+sS'track_album'
+p88
+VAutograph (2010)
+p89
+sS'album_id'
+p90
+VAutograph (2010)
+p91
+sS'track_number'
+p92
+V7
+p93
+sS'disc_number'
+p94
+g9
+sS'track_name'
+p95
+VAmake Amar Moto Thakte Dao
+p96
+sS'genre'
+p97
+V/Bengali/Movie Songs
+p98
+sa(dp99
+S'track_artist'
+p100
+V["Shreya Ghoshal"]
+p101
+sS'track_album'
+p102
+VAutograph (2010)
+p103
+sS'album_id'
+p104
+VAutograph (2010)
+p105
+sS'track_number'
+p106
+V8
+p107
+sS'disc_number'
+p108
+g9
+sS'track_name'
+p109
+VUthche Jege Sokal Gulo
+p110
+sS'genre'
+p111
+V/Bengali/Movie Songs
+p112
+sa(dp113
+S'track_artist'
+p114
+V["Lopamudra Mitra"]
+p115
+sS'track_album'
+p116
+VHemlock Society (2012)
+p117
+sS'album_id'
+p118
+VHemlock Society (2012)
+p119
+sS'track_number'
+p120
+g9
+sS'disc_number'
+p121
+g9
+sS'track_name'
+p122
+VAmar Mawte
+p123
+sS'genre'
+p124
+V/Bengali/Movie Songs
+p125
+sa(dp126
+S'track_artist'
+p127
+V["Anupam Roy"]
+p128
+sS'track_album'
+p129
+VHemlock Society (2012)
+p130
+sS'album_id'
+p131
+VHemlock Society (2012)
+p132
+sS'track_number'
+p133
+g23
+sS'disc_number'
+p134
+g9
+sS'track_name'
+p135
+VEkhon Anek Raat
+p136
+sS'genre'
+p137
+V/Bengali/Movie Songs
+p138
+sa(dp139
+S'track_artist'
+p140
+V["Anupam Roy","Shreya Ghoshal"]
+p141
+sS'track_album'
+p142
+VHemlock Society (2012)
+p143
+sS'album_id'
+p144
+VHemlock Society (2012)
+p145
+sS'track_number'
+p146
+g37
+sS'disc_number'
+p147
+g9
+sS'track_name'
+p148
+VEi To Ami Chai
+p149
+sS'genre'
+p150
+V/Bengali/Movie Songs
+p151
+sa(dp152
+S'track_artist'
+p153
+V["Silajeet Majumdar"]
+p154
+sS'track_album'
+p155
+VHemlock Society (2012)
+p156
+sS'album_id'
+p157
+VHemlock Society (2012)
+p158
+sS'track_number'
+p159
+g51
+sS'disc_number'
+p160
+g9
+sS'track_name'
+p161
+VJawl Phoring
+p162
+sS'genre'
+p163
+V/Bengali/Movie Songs
+p164
+sa(dp165
+S'track_artist'
+p166
+V["Rupankar Bagchi"]
+p167
+sS'track_album'
+p168
+VHemlock Society (2012)
+p169
+sS'album_id'
+p170
+VHemlock Society (2012)
+p171
+sS'track_number'
+p172
+g65
+sS'disc_number'
+p173
+g9
+sS'track_name'
+p174
+VAmar Mawte
+p175
+sS'genre'
+p176
+V/Bengali/Movie Songs
+p177
+sa(dp178
+S'track_artist'
+p179
+V["Rupam Islam"]
+p180
+sS'track_album'
+p181
+VHemlock Society (2012)
+p182
+sS'album_id'
+p183
+VHemlock Society (2012)
+p184
+sS'track_number'
+p185
+g79
+sS'disc_number'
+p186
+g9
+sS'track_name'
+p187
+VPhiriye Dewar Gaan
+p188
+sS'genre'
+p189
+V/Bengali/Movie Songs
+p190
+sa(dp191
+S'track_artist'
+p192
+V["Anupam Roy"]
+p193
+sS'track_album'
+p194
+VHemlock Society (2012)
+p195
+sS'album_id'
+p196
+VHemlock Society (2012)
+p197
+sS'track_number'
+p198
+g93
+sS'disc_number'
+p199
+g9
+sS'track_name'
+p200
+VHemlock Society Theme Music
+p201
+sS'genre'
+p202
+V/Bengali/Movie Songs
+p203
+sa(dp204
+S'track_artist'
+p205
+V["Arijit Singh"]
+p206
+sS'track_album'
+p207
+VBojhena Se Bojhena (2012)
+p208
+sS'album_id'
+p209
+VBojhena Se Bojhena (2012)
+p210
+sS'track_number'
+p211
+g9
+sS'disc_number'
+p212
+g9
+sS'track_name'
+p213
+VBojhena Se Bojhena
+p214
+sS'genre'
+p215
+V/Bengali/Movie Songs
+p216
+sa(dp217
+S'track_artist'
+p218
+V["Arijit Singh"]
+p219
+sS'track_album'
+p220
+VBojhena Se Bojhena (2012)
+p221
+sS'album_id'
+p222
+VBojhena Se Bojhena (2012)
+p223
+sS'track_number'
+p224
+g23
+sS'disc_number'
+p225
+g9
+sS'track_name'
+p226
+VNa Re Na
+p227
+sS'genre'
+p228
+V/Bengali/Movie Songs
+p229
+sa(dp230
+S'track_artist'
+p231
+V["Ash King","Sayani Ghosh"]
+p232
+sS'track_album'
+p233
+VBojhena Se Bojhena (2012)
+p234
+sS'album_id'
+p235
+VBojhena Se Bojhena (2012)
+p236
+sS'track_number'
+p237
+g37
+sS'disc_number'
+p238
+g9
+sS'track_name'
+p239
+VKothin
+p240
+sS'genre'
+p241
+V/Bengali/Movie Songs
+p242
+sa(dp243
+S'track_artist'
+p244
+V["Prashmita Paul"]
+p245
+sS'track_album'
+p246
+VBojhena Se Bojhena (2012)
+p247
+sS'album_id'
+p248
+VBojhena Se Bojhena (2012)
+p249
+sS'track_number'
+p250
+g51
+sS'disc_number'
+p251
+g9
+sS'track_name'
+p252
+VSajna
+p253
+sS'genre'
+p254
+V/Bengali/Movie Songs
+p255
+sa(dp256
+S'track_artist'
+p257
+V["Timir Biswas","Somlata Acharyya Chowdhury"]
+p258
+sS'track_album'
+p259
+VBojhena Se Bojhena (2012)
+p260
+sS'album_id'
+p261
+VBojhena Se Bojhena (2012)
+p262
+sS'track_number'
+p263
+g65
+sS'disc_number'
+p264
+g9
+sS'track_name'
+p265
+VBhogoban
+p266
+sS'genre'
+p267
+V/Bengali/Movie Songs
+p268
+sa(dp269
+S'track_artist'
+p270
+V["Arijit Singh"]
+p271
+sS'track_album'
+p272
+VBojhena Se Bojhena (2012)
+p273
+sS'album_id'
+p274
+VBojhena Se Bojhena (2012)
+p275
+sS'track_number'
+p276
+g79
+sS'disc_number'
+p277
+g9
+sS'track_name'
+p278
+VSajna Reprise
+p279
+sS'genre'
+p280
+V/Bengali/Movie Songs
+p281
+sa(dp282
+S'track_artist'
+p283
+V["Anwesha Datta Gupta","Sukanya Ghosh"]
+p284
+sS'track_album'
+p285
+VBojhena Se Bojhena (2012)
+p286
+sS'album_id'
+p287
+VBojhena Se Bojhena (2012)
+p288
+sS'track_number'
+p289
+g93
+sS'disc_number'
+p290
+g9
+sS'track_name'
+p291
+VBojhena Se Bojhena
+p292
+sS'genre'
+p293
+V/Bengali/Movie Songs
+p294
+sa.
