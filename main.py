@@ -99,6 +99,17 @@ def desc():
     Example 3: How can I get debug logs the script:
     use --debug at the end.
 
+    Example #5: Let's see some uses of data common 
+    python main.py \
+    --url http://mio.to/album/Sree+Sai+Dev/Tea+Kadai+Bench+%282018%29 \
+    --dataselector ".track-list tr" \
+    --datacommon "image .album img:src" \
+    --datacommon "almum .heading .title:text" \
+    --data number .track-number .number:text \
+    --data title .track-details .link:text \
+    --datalimit 5
+
+
     """
 if __name__ == '__main__':
     from sys import argv
@@ -113,7 +124,8 @@ if __name__ == '__main__':
 
     data = myargs.get('data')
     dataselector = myargs.get('dataselector',[None])
-    datacommon = myargs.get('dataselector',[[]])
+    datacommon = myargs.get('datacommon',[])
+    #pdb.set_trace()
     datascrolllimit = myargs.get('datascrolllimit', [0])
     datalimit = myargs.get('datalimit',[10])
 
@@ -137,10 +149,10 @@ if __name__ == '__main__':
         desc()
         #sys.exit(0)
     if url:
-            ans = parser.getData(debug, url[0], data, dataselector[0], datacommon[0], datalimit[0],datascrolllimit[0], threads)
+            ans = parser.getData(debug, url[0], data, dataselector[0], datacommon, datalimit[0],datascrolllimit[0], threads)
     elif pxurl:
             assert(pxselctor is not None)
-            ans = parser.getPXData(debug, pxurl[0], pxselctor, pxlimit[0], pxscrolllimit[0],data, dataselector[0],datacommon[0], datalimit[0], datascrolllimit[0], threads)
+            ans = parser.getPXData(debug, pxurl[0], pxselctor, pxlimit[0], pxscrolllimit[0],data, dataselector[0],datacommon, datalimit[0], datascrolllimit[0], threads)
     if action == 'print':
         print 'Total entry found:', len(ans)
         #print ans

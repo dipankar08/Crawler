@@ -12,6 +12,12 @@ import re
 
 def cleartest(s):
     return re.sub("\s\s+" , " ", s)
+    
+#join two dict
+def join(a,b):
+    for k,v in b.items():
+        a[k] = v
+    return a
 
 def myassert(cond, msg):
     if not cond:
