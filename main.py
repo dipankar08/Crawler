@@ -30,17 +30,20 @@ def desc():
     --url : place the data url when you just have  a data (detail) url.
     --data "<title> <selector>:<type>" indicates the data at the detail page
     --dataselector <selecotor> -> when data page conains a group of information, this indiacte the LCA selector.
+    --datacommon "<title> <selector>:<type>" -> Some common data in page having multiple entry and need to copy in all the entryes.
 
     --datalimit <int> -> indidicates how many data entry to be in result ( default = 10)
-    --pxlimit <int>   -> indicates how many navigation url to be consider in categories page
-    --thread <int>    -> how many parallel thread to be run.
-    --debug           -> If you wnat to see the debug logs
+    --pxlimit <int>   -> indicates how many navigation url to be consider in categories page (default = 3)
+    --thread <int>    -> how many parallel thread to be run.(default: 1)
+    --debug           -> If you wnat to see the debug logs(default: false)
+    --action <save|print> indicate if you want to save or print (default: print)
 
     Notes:
     1. You can have multiple pxurl and pxselctor to explore multiple levels.
     2. 
 
-    This script can crawl any site in a easyer way in commd line
+    Let's go though some of the exmaples.
+
     Example 1: This example show find some data or a list of data from a website.
 
     python main.py \
@@ -110,6 +113,7 @@ if __name__ == '__main__':
 
     data = myargs.get('data')
     dataselector = myargs.get('dataselector',[None])
+    datacommon = myargs.get('dataselector',[[]])
     datascrolllimit = myargs.get('datascrolllimit', [0])
     datalimit = myargs.get('datalimit',[10])
 
@@ -133,10 +137,10 @@ if __name__ == '__main__':
         desc()
         #sys.exit(0)
     if url:
-            ans = parser.getData(debug, url[0], data, dataselector[0], datalimit[0],datascrolllimit[0], threads)
+            ans = parser.getData(debug, url[0], data, dataselector[0], datacommon[0], datalimit[0],datascrolllimit[0], threads)
     elif pxurl:
             assert(pxselctor is not None)
-            ans = parser.getPXData(debug, pxurl[0], pxselctor, pxlimit[0], pxscrolllimit[0],data, dataselector[0], datalimit[0], datascrolllimit[0], threads)
+            ans = parser.getPXData(debug, pxurl[0], pxselctor, pxlimit[0], pxscrolllimit[0],data, dataselector[0],datacommon[0], datalimit[0], datascrolllimit[0], threads)
     if action == 'print':
         print 'Total entry found:', len(ans)
         #print ans

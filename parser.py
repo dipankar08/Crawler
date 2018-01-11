@@ -105,24 +105,26 @@ def elemetryData(soup,data):
         result[d[0]] = select(soup, d[1], d[2])
     return result
 
-def getDataInternal(url, data, dataselector, datascrolllimit, threads):
+def getDataInternal(url, data, dataselector, datacommon,  datascrolllimit, threads):
     # pdb.set_trace()
     soup = getSoup(url, datascrolllimit)
+    datacommonresult = elemetryData(soup, datacommon)
+
     if dataselector:
         datasets = soup.select(dataselector)
-        return [elemetryData(soup1, data) for soup1 in datasets]
+        return [join(elemetryData(soup1, data), datacommonresult) for soup1 in datasets]
     else:
-        return [elemetryData(soup, data)]
+        return [join(elemetryData(soup, data),datacommonresult)]
 
 @timeit
-def getData(debug1, url, data, dataselector,datalimit, datascrolllimit, threads):
+def getData(debug1, url, data, dataselector, datacommon, datalimit, datascrolllimit, threads):
     pre(debug1, url)
-    if debug: print ('Get Data called with:',url,data,dataselector,datalimit, datascrolllimit,threads)
-    data= getDataInternal(url, data, dataselector, datascrolllimit, threads)
+    if debug: print ('Get Data called with:',url,data,dataselector,datacommon, datalimit, datascrolllimit,threads)
+    data= getDataInternal(url, data, dataselector, datacommon, datascrolllimit, threads)
     return data[:datalimit]
 
 @timeit
-def getPXData(debug1, pxurl, pxselector, pxlimit, pxscrolllimit, data, dataselector, datalimit, datascrolllimit, threads):
+def getPXData(debug1, pxurl, pxselector, pxlimit, pxscrolllimit, data, dataselector,datacommon, datalimit, datascrolllimit, threads):
     pre(debug1, pxurl)
     # Verify.
     depth = len(pxselector)
@@ -157,7 +159,7 @@ def getPXData(debug1, pxurl, pxselector, pxlimit, pxscrolllimit, data, dataselec
     durls = startsets
     result = []
     for url in durls:
-        res = getDataInternal(url, data, dataselector, datascrolllimit, threads)
+        res = getDataInternal(url, data, dataselector, datacommon, datascrolllimit, threads)
         if res:
             result = result + res
             if len(result) == datalimit:
