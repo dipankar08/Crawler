@@ -3,6 +3,7 @@ import parser
 import sys
 import pdb
 from colors import *
+from timeit import timeit
 def getopts(argv):
     argv = [x.strip() for x in ' '.join(argv[1:]).split('--') if x.strip()]
     opts = {}
@@ -20,6 +21,7 @@ def getopts(argv):
 # Example:
 # python main.py --key1 value1 --key2 value2 --key2 value3
 # {'key2': ['value2', 'value3'], 'key1': ['value1']}
+sys.stdout.write(RESET)
 def desc():
     print """
     ***************************************************************
@@ -110,16 +112,47 @@ def desc():
     --data title .track-details .link:text \
     --datalimit 5
 
+    Example 6: We can see multple depth is listed as well.
+    python main.py \
+    --pxurl http://mio.to/Bengali \
+    --pxselector "#genres-list a" \
+    --pxselector "#albums-decades a" \
+    --data "heading   h1:text" \
+    --pxlimit 100 \
+    --datalimit 100
+
+    Example 7: We can also nevate categories page thogh NEXT page 
+
+    python main.py \
+    --pxurl http://mio.to/Bengali/Movie+Songs/albums/A \
+    --pxselector ".block-cover .img-cover-175,next:.pagination a.next-page" \
+    --data title h1:text \
+    --pxlimit 1000 \
+    --datalimit 10000 
+
+    Example 8: We can combine mutiple selector in categioes page and as well as have a pointer to the next page.
+
+    python main.py \
+    --pxurl http://mio.to/Bengali \
+    --pxselector "#genres-list a" \
+    --pxselector "#albums-decades a,.alpha-list a,.nav-artists .alpha-list a" \
+    --pxselector ".block-cover .img-cover-175,next:.pagination a.next-page" \
+    --data albumtitle h1:text \
+    --pxlimit 1000000 \
+    --datalimit 10000000 \
+    --threads 100
+
 
     """
-if __name__ == '__main__':
+@timeit
+def main():
     from sys import argv
     myargs = getopts(argv)
 
     url = myargs.get('url', None)
     pxurl = myargs.get('pxurl', None)
 
-    pxselctor = myargs.get('pxselector')
+    _pxselctor = myargs.get('pxselector')
     pxlimit = myargs.get('pxlimit', [3])
     pxscrolllimit = myargs.get('pxscrolllimit', [0])
 
@@ -129,14 +162,30 @@ if __name__ == '__main__':
     #pdb.set_trace()
     datascrolllimit = myargs.get('datascrolllimit', [0])
     datalimit = myargs.get('datalimit',[10])
+    threads = myargs.get('threads', [10])
 
     if pxscrolllimit: pxscrolllimit = [int(x) for x in pxscrolllimit]
     if datascrolllimit: datascrolllimit = [int(x) for x in datascrolllimit]
     if datalimit: datalimit = [int(x) for x in datalimit]
-
+    if threads: threads = [int(x) for x in threads]
 
     debug = myargs.get('debug', False)
-    threads = myargs.get('threads', 1)
+
+    # We are maing pxselector as more powerful
+    # --pxselctor div1.a,div2.a,next:div3.a
+    pxselctor =[]
+    for p in _pxselctor:
+        now ={'selector':[],'next':None}
+        d = [ x.strip() for x in p.split(',') if x.strip()]
+        for d1 in d:
+            if 'next:' in d1:
+                now['next'] = d1.replace('next:','')
+            else:
+                now['selector'].append(d1)
+        pxselctor.append(now)
+    print pxselctor
+
+    
     #pdb.set_trace()
     action = myargs.get('action', ['print'])[0]
 
@@ -150,16 +199,16 @@ if __name__ == '__main__':
         desc()
         #sys.exit(0)
     if url:
-            ans = parser.getData({}, debug, url[0], data, dataselector[0], datacommon, datalimit[0],datascrolllimit[0], threads)
+            ans = parser.getData({}, debug, url[0], data, dataselector[0], datacommon, datalimit[0],datascrolllimit[0], threads[0])
     elif pxurl:
             assert(pxselctor is not None)
-            ans = parser.getPXData({}, debug, pxurl[0], pxselctor, pxlimit[0], pxscrolllimit[0],data, dataselector[0],datacommon, datalimit[0], datascrolllimit[0], threads)
+            ans = parser.getPXData({}, debug, pxurl[0], pxselctor, pxlimit[0], pxscrolllimit[0],data, dataselector[0],datacommon, datalimit[0], datascrolllimit[0], threads[0])
     if action == 'print':
         sys.stdout.write(RESET)
-        print 'Total entry found:', len(ans)
         #print ans
         from tabulate import tabulate
         print tabulate([x.values() for x in ans], headers=ans[0].keys(), tablefmt='fancy_grid')
+        print 'Total entry found:', len(ans)
     elif action =='save':
         print 'Saveing file...'
         import pickle
@@ -169,3 +218,6 @@ if __name__ == '__main__':
     else:
         print 'No action required'
         pass
+if __name__ == '__main__':
+    main()
+

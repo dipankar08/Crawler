@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 from timeit import timeit
 import pdb
 import infyScrollFetch
-
+import concurrent.futures
 from colors import *
 sys.stdout.write(RED)
 debug = True
@@ -114,9 +114,10 @@ def elemetryData(soup,data):
     for d in data:
         result[d[0]] = select(soup, d[1], d[2])
     return result
-
+def getDataInternalRef(a):
+    return getDataInternal(*a)
 def getDataInternal(predata, url, data, dataselector, datacommon,  datascrolllimit, threads):
-    # pdb.set_trace()
+    #pdb.set_trace()
     soup = getSoup(url, datascrolllimit)
     datacommonresult = elemetryData(soup, datacommon)
     datacommonresult = join(datacommonresult, predata)
@@ -127,15 +128,49 @@ def getDataInternal(predata, url, data, dataselector, datacommon,  datascrolllim
     else:
         return [join(elemetryData(soup, data),datacommonresult)]
 
-@timeit
 def getData(predata, debug1, url, data, dataselector, datacommon, datalimit, datascrolllimit, threads):
     pre(debug1, url)
     if debug: print ('Get Data called with:',url,data,dataselector,datacommon, datalimit, datascrolllimit,threads)
     data= getDataInternal(predata, url, data, dataselector, datacommon, datascrolllimit, threads)
     return data[:datalimit]
 
-@timeit
+def fetchCategoriesRef(args):
+    return fetchCategories(*args)
+
+def fetchCategories(depth, curl, pi, pxscrolllimit, pxselector):
+    soup = getSoup(curl, pxscrolllimit)
+    
+    endsets1 = []
+    curselectors = pxselector[depth]['selector']
+    nextselector = pxselector[depth]['next']
+    while True:
+        for cs in curselectors:
+            if len(soup.select(cs)) == 0:
+                print '[Possible Error] Not able to find any categories for ->',cs,' in url =>',curl
+            for x in soup.select(cs):
+                if x.get('href') and x.get('href').strip() != '#':
+                    url = abs(base,x.get('href'))
+                    pre1 = pi.copy()
+                    pre1['depth'+str(depth)] = x.text
+                    endsets1.append((url, pre1))
+        #Do you have next page
+        if nextselector:
+            pagenext = soup.select(nextselector)
+            if pagenext:
+                #pdb.set_trace()
+                if pagenext[0].get('href') and pagenext[0].get('href').strip() != '#':
+                    curl = abs(base,pagenext[0].get('href'))
+                    soup = getSoup(curl, pxscrolllimit)
+                    if soup:
+                        if debug: print 'Moving to next page ...'
+                        continue
+            print '[Possible Error] Not able to find next page ->',nextselector,' in url =>',curl
+        break
+    return endsets1
+
+
 def getPXData(predata, debug1, pxurl, pxselector, pxlimit, pxscrolllimit, data, dataselector,datacommon, datalimit, datascrolllimit, threads):
+    #pdb.set_trace()
     pre(debug1, pxurl)
     # Verify.
     depth = len(pxselector)
@@ -150,22 +185,25 @@ def getPXData(predata, debug1, pxurl, pxselector, pxlimit, pxscrolllimit, data, 
         if debug:
             print('Featching for depth'+str(d+1))
             print 'Staring url set',startsets
-        for url,pi in startsets:
-            soup = getSoup(url, pxscrolllimit)
-            # pdb.set_trace()
-            endsets1 =[]
-            for x in soup.select(pxselector[d]):
-                if x.get('href') and x.get('href').strip() != '#':
-                    url = abs(base,x.get('href'))
-                    pre1 = pi.copy()
-                    pre1['depth'+str(d)] = x.text
-                    endsets1.append((url, pre1))
-
-            if len(endsets1) > pxlimit:
-                endsets += endsets1[:pxlimit]
-            else:
-                endsets += endsets1
+        curselectors = pxselector[d]
+        #Parallel processing ..
+        endsets =[]
+        inps = [(d, url, pi, pxscrolllimit, pxselector) for url,pi in startsets]
+        if threads > 1:
+            with concurrent.futures.ProcessPoolExecutor(max_workers=threads) as pool:
+                outs = [a for a in pool.map(fetchCategoriesRef,inps)]
+            for o in outs:
+                endsets += o
+        else:
+            outs = [ fetchCategoriesRef(ii) for ii in inps] 
+            for o in outs:
+                endsets += o
+        
+        #trim down endsets
+        endsets = endsets[:pxlimit]
         myassert(len(endsets) > 0,"Some how we dont have any url at depth "+str(d))
+
+        #flip
         startsets = endsets
         endsets = []
     if debug: print 'All depth parse complete and count of dataurl is :', len(endsets)
@@ -177,11 +215,16 @@ def getPXData(predata, debug1, pxurl, pxselector, pxlimit, pxscrolllimit, data, 
         return
     durls = startsets
     result = []
-    for url, p in durls:
-        res = getDataInternal( p, url, data, dataselector, datacommon, datascrolllimit, threads)
-        if res:
-            result = result + res
-            if len(result) == datalimit:
-                break
-    return result
-    sys.stdout.write(RESET)
+    # multiprocessing ... 
+    inps = [(p, url, data, dataselector, datacommon, datascrolllimit, threads) for url, p in durls]
+    if threads > 1:
+        with concurrent.futures.ProcessPoolExecutor(max_workers=threads) as pool:
+            out = [ a for a in pool.map(getDataInternalRef,inps)]
+        result = []
+        for o in out:
+           result += o 
+    else:
+        result = [ getDataInternalRef(ii) for ii in inps] 
+    #pdb.set_trace()
+    return result[:datalimit]
+    

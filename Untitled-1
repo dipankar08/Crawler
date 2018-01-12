@@ -1,0 +1,21 @@
+    python main.py \
+    --pxurl http://mio.to/Bengali \
+    --pxselector "#genres-list a" \
+    --pxselector "#albums-decades a,.alpha-list a,.nav-artists .alpha-list a" \
+    --pxselector ".block-cover .img-cover-175,next:.pagination a.next-page" \
+    --data title h1:text \
+    --pxlimit 1000 \
+    --datalimit 10000 
+    --dataselector  "#genre-albums .block-cover" \
+    --data "almum .album-name:text" \
+    --pxlimit 100000 \
+    --datalimit 1000000 \
+    --threads 25
+
+
+    python main.py \
+    --pxurl http://mio.to/Bengali/Movie+Songs/albums/A \
+    --pxselector ".block-cover .img-cover-175,next:.pagination a.next-page" \
+    --data title h1:text \
+    --pxlimit 1000 \
+    --datalimit 10000 
