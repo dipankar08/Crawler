@@ -142,6 +142,31 @@ def desc():
     --datalimit 10000000 \
     --threads 100
 
+    Exampel 9: Full Example
+    python main.py \
+    --pxurl http://mio.to/Bengali \
+    --pxselector "#genres-list a" \
+    --pxselector "#albums-decades a,.alpha-list a,.nav-artists .alpha-list a" \
+    --pxselector ".block-cover .img-cover-175,next:.pagination a.next-page" \
+    --datacommon "album_name #content-core #album-name:text" \
+    --datacommon "album_artist #content-core .album .artist:text" \
+    --datacommon "album_id #content-core #album-id:text" \
+    --datacommon "album_type #content-core .album .type:text" \
+    --datacommon "album_image #content-core .album .info img:src" \
+    --datacommon "album_details #content-core .album .details:text" \
+    --datacommon "almum_title .heading .title:text" \
+    --dataselector ".track-list tr" \
+    --data track_album_id tr:album_id \
+    --data track_artist tr:track_artist \
+    --data track_album tr:track_album \
+    --data track_disc_number tr:disc_number \
+    --data track_name tr:track_name \
+    --data track_number tr:track_number \
+    --data track_genre tr:genre \
+    --pxlimit 200000000 \
+    --datalimit 20000000 \
+    --threads 50 \
+    --action save
 
     """
 @timeit

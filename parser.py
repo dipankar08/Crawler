@@ -11,9 +11,16 @@ sys.stdout.write(RED)
 debug = True
 baseurl = ""
 import re
+from operator import itemgetter
 
 def cleartest(s):
     return re.sub("\s\s+" , " ", s)
+
+def unique_by_key(elements, key=None):
+    if key is None:
+        # no key: the whole element must be unique
+        key = lambda e: e
+    return {key(el): el for el in elements}.values()
 
 #join two dict
 def join(a,b):
@@ -28,16 +35,21 @@ def myassert(cond, msg):
         sys.exit(0)
 
 def getSoup(url, pxscrolllimit=None):
-    # pdb.set_trace()
-    if debug: print '\n************Fetching*****************\n ', url, '...'
-    sys.stdout.write('.')
-    sys.stdout.flush()
-    if pxscrolllimit is None or pxscrolllimit is 0:
-        html_doc = requests.get(url).text
-    else:
-        html_doc = infyScrollFetch.get(url)
-    soup = BeautifulSoup(html_doc, 'html.parser')
-    return soup
+    try:
+        # pdb.set_trace()
+        if debug: print '\n************Fetching*****************\n ', url, '...'
+        sys.stdout.write('.')
+        sys.stdout.flush()
+        if pxscrolllimit is None or pxscrolllimit is 0:
+            html_doc = requests.get(url).text
+        else:
+            html_doc = infyScrollFetch.get(url)
+        soup = BeautifulSoup(html_doc, 'html.parser')
+        return soup
+    except Exception, e:
+        print 'While Retriving URL...',url
+        pdb.set_trace()
+    
 
 def abs(base, url):
     if not url:
@@ -119,8 +131,12 @@ def getDataInternalRef(a):
 def getDataInternal(predata, url, data, dataselector, datacommon,  datascrolllimit, threads):
     #pdb.set_trace()
     soup = getSoup(url, datascrolllimit)
+    if not soup:
+        print '[ERROR] getDataInternal: Not able to get the soup for data url:',url
+        return []
     datacommonresult = elemetryData(soup, datacommon)
     datacommonresult = join(datacommonresult, predata)
+    datacommonresult['_url'] = url
 
     if dataselector:
         datasets = soup.select(dataselector)
@@ -139,7 +155,9 @@ def fetchCategoriesRef(args):
 
 def fetchCategories(depth, curl, pi, pxscrolllimit, pxselector):
     soup = getSoup(curl, pxscrolllimit)
-    
+    if not soup:
+        print '[ERROR] fetchCategories: Not able to get the soup for data url:',url
+        return []
     endsets1 = []
     curselectors = pxselector[depth]['selector']
     nextselector = pxselector[depth]['next']
@@ -184,10 +202,11 @@ def getPXData(predata, debug1, pxurl, pxselector, pxlimit, pxscrolllimit, data, 
     for d in range(depth):
         if debug:
             print('Featching for depth'+str(d+1))
-            print 'Staring url set',startsets
+            print 'Staring url set', startsets
         curselectors = pxselector[d]
+
         #Parallel processing ..
-        endsets =[]
+        endsets = []
         inps = [(d, url, pi, pxscrolllimit, pxselector) for url,pi in startsets]
         if threads > 1:
             with concurrent.futures.ProcessPoolExecutor(max_workers=threads) as pool:
@@ -199,6 +218,15 @@ def getPXData(predata, debug1, pxurl, pxselector, pxlimit, pxscrolllimit, data, 
             for o in outs:
                 endsets += o
         
+        #Just keep uniquue.
+        print '[INFO] Complete the exploring depth:',(d+1)
+        #pdb.set_trace()
+        a_len = len(endsets)
+        endsets = unique_by_key(endsets, key=itemgetter(0))
+        b_len = len(endsets)
+        print '[DEBUG] Duplicate found: ',(a_len - b_len) 
+        print '[INFO] Total uninique link found :', len(endsets)
+
         #trim down endsets
         endsets = endsets[:pxlimit]
         myassert(len(endsets) > 0,"Some how we dont have any url at depth "+str(d))
